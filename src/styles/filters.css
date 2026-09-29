@@ -1,0 +1,34 @@
+.month-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 12px;
+
+  margin-bottom: 22px;
+}
+
+.month-filter label {
+  color: var(--muted);
+
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.month-filter input[type="month"] {
+  flex-shrink: 0;
+  width: 250px;
+}
+
+@media (max-width: 768px) {
+  .month-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .month-filter input[type="month"] {
+    width: 100%;
+  }
+}

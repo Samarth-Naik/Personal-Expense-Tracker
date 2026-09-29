@@ -1,0 +1,134 @@
+.category-manager-add {
+  display: flex;
+  gap: 10px;
+
+  margin-bottom: 16px;
+}
+
+.category-manager-add input {
+  flex: 1;
+}
+
+.category-manager-error {
+  color: var(--danger);
+
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.category-manager-hint {
+  margin: 0 0 12px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+}
+
+.category-manager-list {
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.category-manager-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 12px 14px;
+
+  background: rgba(240, 240, 219, 0.35);
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  transition: opacity 0.15s ease;
+}
+
+.category-manager-item.is-dragging {
+  opacity: 0.4;
+}
+
+.category-manager-label {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+.drag-handle {
+  color: var(--muted);
+
+  font-size: 16px;
+  line-height: 1;
+
+  cursor: grab;
+  touch-action: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.category-manager-item input {
+  flex: 1;
+}
+
+.category-manager-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.button-icon {
+  display: none;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .category-manager-add {
+    flex-direction: column;
+  }
+
+  /* flex: 1 sets height basis to 0 once the container becomes a column,
+     which is what was squashing this input on mobile. */
+  .category-manager-add input {
+    flex: none;
+    width: 100%;
+  }
+
+  .category-manager-item {
+    flex-wrap: wrap;
+  }
+
+  /* Swap Edit/Delete/Save/Cancel from text to icon-only so they don't
+     blow up the row width on narrow screens. */
+  .icon-button .button-label {
+    display: none;
+  }
+
+  .icon-button .button-icon {
+    display: inline-flex;
+  }
+
+  .icon-button {
+    padding: 8px;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+  }
+}

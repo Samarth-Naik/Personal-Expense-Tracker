@@ -1,0 +1,29 @@
+.export-button {
+  background: var(--card);
+  color: var(--navy);
+
+  border: 1px solid var(--blue-grey);
+}
+
+.export-button:hover:not(:disabled) {
+   transform: translateY(-1px);
+}
+
+.export-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.5;
+
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .export-buttons {
+    flex-direction: column;
+  }
+
+  .export-button {
+    width: 100%;
+  }
+}

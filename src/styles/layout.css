@@ -1,0 +1,82 @@
+.app-content {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 0;
+
+  margin: 0 auto;
+
+  padding: 32px 20px;
+}
+
+.card {
+  width: 100%;
+  min-width: 0;
+
+  margin-bottom: 22px;
+  padding: 24px;
+
+  background: rgba(255, 255, 255, 0.88);
+
+  border: 1px solid rgba(172, 186, 196, 0.45);
+  border-radius: 16px;
+
+  box-shadow:
+    0 4px 16px rgba(48, 54, 79, 0.06),
+    0 1px 3px rgba(48, 54, 79, 0.04);
+
+  backdrop-filter: blur(8px);
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+
+  color: var(--navy);
+
+  font-size: 20px;
+  letter-spacing: -0.3px;
+}
+
+/* =========================
+   SIGN-IN VIEW
+   ========================= */
+
+.signin-view {
+  min-height: 80vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   PAGE BACK LINK
+   ========================= */
+
+.back-link {
+  display: inline-block;
+
+  margin-bottom: 16px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--navy);
+}
+
+@media (max-width: 768px) {
+  .app-content {
+    padding: 22px 15px;
+  }
+
+  .card {
+    padding: 18px 16px;
+
+    border-radius: 14px;
+  }
+}

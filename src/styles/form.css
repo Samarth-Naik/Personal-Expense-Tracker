@@ -1,0 +1,81 @@
+.expense-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.form-row {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 14px;
+}
+
+.form-row label {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  color: var(--muted);
+
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cancel-button {
+  background: var(--blue-grey);
+  color: var(--navy);
+}
+
+.cancel-button:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .form-row label {
+    width: 100%;
+  }
+
+  input[type="date"] {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    display: block;
+  }
+
+  .form-group {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .form-row input,
+  .form-row select,
+  .form-row button {
+    width: 100%;
+  }
+}

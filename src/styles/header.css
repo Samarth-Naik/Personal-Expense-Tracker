@@ -1,0 +1,214 @@
+.app-header {
+  width: 100%;
+
+  background: linear-gradient(
+    135deg,
+    #30364f 0%,
+    #3b435f 100%
+  );
+
+  color: white;
+
+  box-shadow:
+    0 4px 18px rgba(48, 54, 79, 0.22);
+}
+
+.header-content {
+  width: 100%;
+  max-width: 1200px;
+  min-width: 0;
+
+  margin: 0 auto;
+  padding: 18px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.header-content h1 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+}
+
+/* =========================
+   NAV (desktop)
+   ========================= */
+
+.header-nav {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.header-nav-link {
+  padding: 7px 12px;
+
+  color: rgba(255, 255, 255, 0.85);
+
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+
+  border-radius: 8px;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.header-nav-link:hover {
+  color: white;
+
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.header-nav-link.is-active {
+  color: white;
+
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Duplicate of the nav link rendered inside the mobile profile menu;
+   hidden on desktop where .header-nav already shows it. */
+.profile-menu-nav-link {
+  display: none;
+}
+
+.user-section {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+  min-width: 0;
+}
+
+.desktop-user {
+  max-width: 220px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: rgba(255, 255, 255, 0.9);
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.profile-button {
+  width: 42px;
+  height: 42px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid rgba(240, 240, 219, 0.8);
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  background: rgba(172, 186, 196, 0.2);
+  color: white;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.profile-button:hover {
+  background: rgba(172, 186, 196, 0.35);
+
+  transform: scale(1.05);
+}
+
+.profile-button img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.profile-menu {
+  position: absolute;
+
+  top: 52px;
+  right: 0;
+
+  z-index: 20;
+
+  min-width: 170px;
+  padding: 12px;
+
+  background: var(--card);
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  box-shadow:
+    0 12px 30px rgba(48, 54, 79, 0.18);
+}
+
+.profile-menu button {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 15px;
+  }
+
+  .header-content h1 {
+    font-size: 21px;
+  }
+
+  .desktop-user {
+    display: none;
+  }
+
+  /* Nav moves into the profile dropdown on mobile instead of sitting in
+     the header bar, where it doesn't have room. */
+  .header-nav {
+    display: none;
+  }
+
+  .profile-menu-nav-link {
+    display: block;
+    width: 100%;
+
+    margin-bottom: 8px;
+    padding: 11px 17px;
+
+    background: linear-gradient(135deg, var(--navy), #414964);
+    color: white;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 650;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .profile-menu-nav-link.is-active {
+    background: linear-gradient(135deg, var(--primary-dark), var(--navy));
+  }
+}

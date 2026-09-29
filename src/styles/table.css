@@ -1,0 +1,131 @@
+.expense-table {
+  width: 100%;
+}
+
+.table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+
+  -webkit-overflow-scrolling: touch;
+
+  border: 1px solid var(--border);
+
+  border-radius: 12px;
+}
+
+.table-wrapper table {
+  width: 100%;
+
+  min-width: 650px;
+
+  border-collapse: collapse;
+
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.expense-table th {
+  padding: 14px;
+
+  background: var(--navy);
+
+  color: var(--ivory);
+
+  font-size: 13px;
+  font-weight: 750;
+
+  text-align: left;
+
+  white-space: nowrap;
+}
+
+.expense-table td {
+  padding: 14px;
+
+  border-top: 1px solid var(--border);
+
+  font-size: 14px;
+}
+
+.expense-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.expense-table tbody tr:hover {
+  background: rgba(240, 240, 219, 0.45);
+}
+
+.expense-table td:nth-child(4) {
+  color: var(--navy);
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.expense-table td:last-child {
+  white-space: nowrap;
+}
+
+.expense-table td:last-child button {
+  margin-right: 6px;
+}
+
+/* =========================
+   EDIT / DELETE
+   ========================= */
+
+.edit-button {
+  background: var(--blue-grey);
+
+  color: var(--navy);
+}
+
+.edit-button:hover {
+  background: #9eafb9;
+
+  box-shadow:
+    0 5px 12px rgba(172, 186, 196, 0.35);
+}
+
+.delete-button {
+  background: var(--danger);
+}
+
+.delete-button:hover {
+  background: #914d4d;
+
+  box-shadow:
+    0 5px 12px rgba(168, 92, 92, 0.2);
+}
+
+/* =========================
+   LOAD MORE
+   ========================= */
+
+.load-more-wrapper {
+  display: flex;
+  justify-content: center;
+
+  margin-top: 18px;
+}
+
+.load-more-button {
+  background: var(--blue-grey);
+  color: var(--navy);
+}
+
+.load-more-button:hover {
+  background: #9eafb9;
+
+  box-shadow:
+    0 5px 12px rgba(172, 186, 196, 0.35);
+}
+
+@media (max-width: 768px) {
+  .table-wrapper table {
+    min-width: 650px;
+  }
+}
