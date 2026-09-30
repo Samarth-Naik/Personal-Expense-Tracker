@@ -27,12 +27,12 @@ export function useExpenses(user: User | null) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
     const loadExpenses = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
 
       const expensesQuery = query(
