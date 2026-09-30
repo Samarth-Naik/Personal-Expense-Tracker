@@ -23,6 +23,8 @@ export function ExpenseForm({
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(today());
   const [error, setError] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [voiceText, setVoiceText] = useState("");
 
   // Tracks which Expense (if any) the form fields currently reflect, so we
   // can detect a change during render and re-sync — the pattern React
@@ -53,6 +55,84 @@ export function ExpenseForm({
     setError("");
   };
 
+  const startVoiceRecognition = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setError("Voice recognition is not supported in this browser.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "en-IN";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setVoiceText("");
+      setError("");
+    };
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      const transcript = event.results[0][0].transcript;
+
+      setVoiceText(transcript);
+      parseVoiceExpense(transcript);
+    };
+
+    recognition.onerror = () => {
+      setError("Could not recognize your voice. Please try again.");
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
+
+  const parseVoiceExpense = (text: string) => {
+    const lowerText = text.toLowerCase();
+
+    // Find amount
+    const amountMatch = lowerText.match(
+      /(?:₹|rs\.?|rupees?)?\s*(\d+(?:\.\d+)?)/,
+    );
+
+    // Find category
+    const matchedCategory = categories.find((c) =>
+      lowerText.includes(c.name.toLowerCase()),
+    );
+
+    // Find description
+    let parsedDescription = "";
+
+    const descriptionMatch = lowerText.match(
+      /(?:for|on)\s+(.+?)(?:\s+under\s+|\s+category\s+|$)/,
+    );
+
+    if (descriptionMatch) {
+      parsedDescription = descriptionMatch[1].trim();
+    }
+
+    if (amountMatch) {
+      setAmount(amountMatch[1]);
+    }
+
+    if (matchedCategory) {
+      setCategory(matchedCategory.name);
+    }
+
+    if (parsedDescription) {
+      setDescription(parsedDescription);
+    }
+
+    setDate(today());
+  };
   const handleSubmit = () => {
     if (!amount || Number(amount) <= 0) {
       setError("Please enter a valid amount.");
@@ -95,6 +175,10 @@ export function ExpenseForm({
   return (
     <section className="card expense-form">
       <h2>{editingExpense ? "Edit Expense" : "Add Expense"}</h2>
+      <button type="button" onClick={startVoiceRecognition}>
+        {isListening ? "Listening..." : "🎤 Add by Voice"}
+      </button>
+      {voiceText && <p>Heard: {voiceText}</p>}
       <div className="form-row">
         <label>
           Amount
