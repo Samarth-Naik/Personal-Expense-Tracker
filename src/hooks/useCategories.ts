@@ -21,12 +21,12 @@ export function useCategories(user: User | null) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
     const loadCategories = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
 
       const categoriesQuery = query(

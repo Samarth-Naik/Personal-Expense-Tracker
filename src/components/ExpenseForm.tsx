@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Expense } from "../types/expense";
 import type { Category } from "../types/category";
 import type { ExpenseInput } from "../hooks/useExpenses";
@@ -24,26 +24,30 @@ export function ExpenseForm({
   const [date, setDate] = useState(today());
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  // Tracks which Expense (if any) the form fields currently reflect, so we
+  // can detect a change during render and re-sync — the pattern React
+  // recommends for "adjust state when a prop changes" instead of an effect.
+  const [syncedExpense, setSyncedExpense] = useState<Expense | null>(null);
+
+  if (editingExpense !== syncedExpense) {
+    setSyncedExpense(editingExpense);
+
     if (editingExpense) {
       setAmount(String(editingExpense.amount));
       setCategory(editingExpense.category);
       setDescription(editingExpense.description);
       setDate(editingExpense.date);
     }
-  }, [editingExpense]);
+  }
 
-  // Default the category field to the first available category once
-  // categories have loaded, but only for a fresh (non-edit) form.
-  useEffect(() => {
-    if (!editingExpense && !category && categories.length > 0) {
-      setCategory(categories[0].name);
-    }
-  }, [editingExpense, category, categories]);
+  // Falls back to the first available category for a fresh (non-edit) form
+  // until the user picks one themselves. Derived at render time rather than
+  // stored via an effect, since it's just a default for display/submit.
+  const effectiveCategory = category || categories[0]?.name || "";
 
   const reset = () => {
     setAmount("");
-    setCategory(categories[0]?.name ?? "");
+    setCategory("");
     setDescription("");
     setDate(today());
     setError("");
@@ -62,13 +66,18 @@ export function ExpenseForm({
       setError("Please enter a description.");
       return;
     }
-    if (!category) {
+    if (!effectiveCategory) {
       setError("Please select or add a category first.");
       return;
     }
 
     setError("");
-    onSubmit({ amount: Number(amount), category, description, date });
+    onSubmit({
+      amount: Number(amount),
+      category: effectiveCategory,
+      description,
+      date,
+    });
     reset();
   };
 
@@ -79,9 +88,9 @@ export function ExpenseForm({
 
   // If the expense being edited uses a category that's since been deleted,
   // keep it selectable so editing doesn't silently change its category.
-  const categoryOptions = categories.some((c) => c.name === category)
+  const categoryOptions = categories.some((c) => c.name === effectiveCategory)
     ? categories.map((c) => c.name)
-    : [category, ...categories.map((c) => c.name)].filter(Boolean);
+    : [effectiveCategory, ...categories.map((c) => c.name)].filter(Boolean);
 
   return (
     <section className="card expense-form">
@@ -100,7 +109,7 @@ export function ExpenseForm({
         <label>
           Category
           <select
-            value={category}
+            value={effectiveCategory}
             onChange={(e) => setCategory(e.target.value)}
           >
             {categoryOptions.length === 0 ? (
