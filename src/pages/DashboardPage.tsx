@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { SummaryCards } from "../components/SummaryCards";
 import { CategoryBreakdown } from "../components/CategoryBreakdown";
 
@@ -19,10 +18,6 @@ export function DashboardPage({
 }: DashboardPageProps) {
   return (
     <>
-      <Link to="/" className="back-link">
-        ← Back to Expenses
-      </Link>
-
       <div className="month-filter">
         <label htmlFor="dashboard-month">Select Month</label>
         <input

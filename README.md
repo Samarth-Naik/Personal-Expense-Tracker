@@ -73,3 +73,79 @@ export default defineConfig([
 ])
 
 ```
+## Git Commands to create and merge a feature branch.
+# Start
+git checkout main
+git pull origin main
+
+# Create feature branch
+git checkout -b feature/speech-input
+
+# Work...
+# Make your code changes
+
+# Check changes
+git status
+git diff
+
+# Test
+npm run lint
+npm run build
+
+# Commit
+git add .
+git commit -m "Add speech input for expenses"
+
+# Push
+git push -u origin feature/speech-input
+
+# Create a Pull Request
+Click Compare & pull request.
+Give the PR a useful title, for example:
+
+# Review the PR
+Before merging, look at the Files changed tab.
+
+# Merge the PR
+
+# Clean up the branch
+First switch back to main:
+git checkout main
+Then update it:
+git pull origin main
+Then delete your local feature branch:
+git branch -d feature/speech-input
+If the GitHub branch wasn't automatically deleted by GitHub, you can delete the remote branch:
+git push origin --delete feature/speech-input
+
+# Complete workflow
+                 ┌──────────────┐
+                 │     main     │
+                 └──────┬───────┘
+                        │
+              git checkout -b
+                        │
+                        ▼
+             feature/speech-input
+                        │
+                 Make changes
+                        │
+                 Test + lint
+                        │
+                 git add .
+                        │
+                 git commit
+                        │
+                 git push
+                        │
+                        ▼
+                 GitHub Pull Request
+                        │
+                     Review
+                        │
+                     Merge
+                        │
+                        ▼
+                 ┌──────────────┐
+                 │     main     │
+                 └──────────────┘

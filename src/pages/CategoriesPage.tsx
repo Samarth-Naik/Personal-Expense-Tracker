@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import type { Category } from "../types/category";
 import { CategoryManager } from "../components/CategoryManager";
 
@@ -21,10 +20,6 @@ export function CategoriesPage({
 }: CategoriesPageProps) {
   return (
     <>
-      <Link to="/" className="back-link">
-        ← Back to Expenses
-      </Link>
-
       <CategoryManager
         categories={categories}
         error={error}
