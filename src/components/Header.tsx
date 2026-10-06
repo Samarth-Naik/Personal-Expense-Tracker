@@ -71,6 +71,29 @@ function CategoriesIcon() {
   );
 }
 
+function TransactionsIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <line x1="8" y1="6" x2="21" y2="6" />
+      <line x1="8" y1="12" x2="21" y2="12" />
+      <line x1="8" y1="18" x2="21" y2="18" />
+      <line x1="3" y1="6" x2="3.01" y2="6" />
+      <line x1="3" y1="12" x2="3.01" y2="12" />
+      <line x1="3" y1="18" x2="3.01" y2="18" />
+    </svg>
+  );
+}
+
 function LogoutIcon() {
   return (
     <svg
@@ -123,6 +146,9 @@ export function Header({ user, onLogout }: HeaderProps) {
           </NavLink>
           <NavLink to="/categories" className={navLinkClass}>
             Categories
+          </NavLink>
+          <NavLink to="/transactions" className={navLinkClass}>
+            Transactions
           </NavLink>
           <button
             type="button"
@@ -186,6 +212,14 @@ export function Header({ user, onLogout }: HeaderProps) {
           >
             <CategoriesIcon />
             <span>Categories</span>
+          </NavLink>
+          <NavLink
+            to="/transactions"
+            className={sidePanelLinkClass}
+            onClick={closePanel}
+          >
+            <TransactionsIcon />
+            <span>Transactions</span>
           </NavLink>
         </div>
 

@@ -1,9 +1,9 @@
+import { Link } from "react-router-dom";
 import type { Expense } from "../types/expense";
 import type { Category } from "../types/category";
 import type { ExpenseInput } from "../hooks/useExpenses";
 import { ExpenseForm } from "../components/ExpenseForm";
 import { ExpenseTable } from "../components/ExpenseTable";
-import { ExportButtons } from "../components/ExportButtons";
 
 type ExpensesPageProps = {
   editingExpense: Expense | null;
@@ -11,9 +11,7 @@ type ExpensesPageProps = {
   onSubmitExpense: (input: ExpenseInput) => void;
   onCancelEdit: () => void;
   error: string;
-  selectedMonth: string;
-  onSelectedMonthChange: (month: string) => void;
-  tableExpenses: Expense[];
+  latestExpenses: Expense[];
   onEditExpense: (expense: Expense) => void;
   onDeleteExpense: (id: string) => void;
 };
@@ -24,9 +22,7 @@ export function ExpensesPage({
   onSubmitExpense,
   onCancelEdit,
   error,
-  selectedMonth,
-  onSelectedMonthChange,
-  tableExpenses,
+  latestExpenses,
   onEditExpense,
   onDeleteExpense,
 }: ExpensesPageProps) {
@@ -41,23 +37,22 @@ export function ExpensesPage({
 
       {error && <p>{error}</p>}
 
-      <div className="month-filter">
-        <label htmlFor="month">Select Month</label>
-        <input
-          id="month"
-          type="month"
-          value={selectedMonth}
-          onChange={(e) => onSelectedMonthChange(e.target.value)}
-        />
-        <ExportButtons expenses={tableExpenses} selectedMonth={selectedMonth} />
-      </div>
+      <section className=" exp expense-table">
+        <div className="section-header">
+          <h2>Expenses</h2>
+          <Link to="/transactions" className="see-all-link">
+            See all →
+          </Link>
+        </div>
 
-      <ExpenseTable
-        key={selectedMonth}
-        expenses={tableExpenses}
-        onEdit={onEditExpense}
-        onDelete={onDeleteExpense}
-      />
+        <ExpenseTable
+          expenses={latestExpenses}
+          onEdit={onEditExpense}
+          onDelete={onDeleteExpense}
+          mode="fixed"
+          limit={5}
+        />
+      </section>
     </>
   );
 }

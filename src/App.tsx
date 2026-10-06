@@ -1,6 +1,6 @@
 import "./styles/index.css";
 import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { useExpenses } from "./hooks/useExpenses";
 import { useCategories } from "./hooks/useCategories";
@@ -9,14 +9,28 @@ import {
   getTotal,
   getCategoryTotals,
   sortByLatestUpdated,
+  getCurrentMonth,
 } from "./utils/expenseCalculations";
 import { Header } from "./components/Header";
 import { ExpensesPage } from "./pages/ExpensesPage";
+import { TransactionsPage } from "./pages/Transactionspage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { CategoriesPage } from "./pages/CategoriesPage";
 import type { Expense } from "./types/expense";
 
 function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
+    </BrowserRouter>
+  );
+}
+
+// Holds all app state/logic and renders the routed pages. Split out from
+// App so it can call useNavigate() — that hook only works inside a
+// component rendered beneath <BrowserRouter>, not in the component that
+// returns <BrowserRouter> itself.
+function AppShell() {
   const { user, authLoading, loginWithGoogle, logout } = useAuth();
   const {
     expenses,
@@ -36,8 +50,9 @@ function App() {
     reorderCategories,
   } = useCategories(user);
 
-  const [selectedMonth, setSelectedMonth] = useState("2026-09");
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const navigate = useNavigate();
 
   if (authLoading) {
     return (
@@ -55,13 +70,21 @@ function App() {
     if (confirmed) deleteExpense(id);
   };
 
+  // Used from the Transactions page: the edit form only lives on Home, so
+  // editing from Transactions sets the expense to edit and navigates back.
+  const editFromTransactions = (expense: Expense) => {
+    setEditingExpense(expense);
+    navigate("/");
+  };
+
   const monthlyExpenses = filterByMonth(expenses, selectedMonth);
   const totalExpenses = getTotal(monthlyExpenses);
   const categoryTotals = getCategoryTotals(monthlyExpenses);
   const tableExpenses = sortByLatestUpdated(monthlyExpenses);
+  const latestExpenses = sortByLatestUpdated(expenses);
 
   return (
-    <BrowserRouter>
+    <>
       {user && <Header user={user} onLogout={logout} />}
 
       <main className="app-content">
@@ -93,10 +116,20 @@ function App() {
                       }}
                       onCancelEdit={() => setEditingExpense(null)}
                       error={error}
+                      latestExpenses={latestExpenses}
+                      onEditExpense={setEditingExpense}
+                      onDeleteExpense={handleDeleteExpense}
+                    />
+                  }
+                />
+                <Route
+                  path="/transactions"
+                  element={
+                    <TransactionsPage
                       selectedMonth={selectedMonth}
                       onSelectedMonthChange={setSelectedMonth}
                       tableExpenses={tableExpenses}
-                      onEditExpense={setEditingExpense}
+                      onEditExpense={editFromTransactions}
                       onDeleteExpense={handleDeleteExpense}
                     />
                   }
@@ -133,7 +166,7 @@ function App() {
             ))}
         </div>
       </main>
-    </BrowserRouter>
+    </>
   );
 }
 

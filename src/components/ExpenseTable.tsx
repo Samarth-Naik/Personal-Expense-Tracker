@@ -1,83 +1,108 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Expense } from "../types/expense";
+import { EditIcon, DeleteIcon } from "./icons";
 
 type ExpenseTableProps = {
   expenses: Expense[];
   onEdit: (expense: Expense) => void;
   onDelete: (id: string) => void;
+  // "fixed": always shows exactly `limit` tiles, no more-loading affordance
+  // (used on Home for the "latest 5" preview).
+  // "lazy": starts at `limit` tiles and reveals `step` more at a time as the
+  // sentinel below the list scrolls into view (used on Transactions).
+  mode?: "fixed" | "lazy";
+  limit?: number;
+  step?: number;
 };
 
-const INITIAL_VISIBLE = 5;
-const LOAD_MORE_STEP = 10;
+export function ExpenseTable({
+  expenses,
+  onEdit,
+  onDelete,
+  mode = "lazy",
+  limit = 5,
+  step = 10,
+}: ExpenseTableProps) {
+  const [visibleCount, setVisibleCount] = useState(limit);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-export function ExpenseTable({ expenses, onEdit, onDelete }: ExpenseTableProps) {
-  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+  const visibleExpenses =
+    mode === "fixed"
+      ? expenses.slice(0, limit)
+      : expenses.slice(0, visibleCount);
 
-  const visibleExpenses = expenses.slice(0, visibleCount);
-  const hasMore = visibleCount < expenses.length;
+  const hasMore = mode === "lazy" && visibleCount < expenses.length;
+
+  // Subscribes to an IntersectionObserver watching the sentinel div; this is
+  // the React-recommended "subscribe to an external system, call setState in
+  // its callback" effect pattern, so it's fine under set-state-in-effect.
+  useEffect(() => {
+    if (!hasMore) return;
+
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => prev + step);
+        }
+      },
+      { rootMargin: "150px" },
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, step]);
+
+  if (expenses.length === 0) {
+    return <p className="empty-state">No expenses found.</p>;
+  }
 
   return (
-    <section className="card expense-table">
-      <h2>Expenses</h2>
-      <div className="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Category</th>
-              <th>Description</th>
-              <th>Amount</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+    <>
+      <div className="expense-tile-list">
+        {visibleExpenses.map((expense) => (
+          <div className="expense-tile" key={expense.id}>
+            <div className="expense-tile-amount">₹{expense.amount}</div>
 
-          <tbody>
-            {expenses.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="empty-state">
-                  No expenses found for this month.
-                </td>
-              </tr>
-            ) : (
-              visibleExpenses.map((expense) => (
-                <tr key={expense.id}>
-                  <td>{expense.date}</td>
-                  <td>{expense.category}</td>
-                  <td>{expense.description}</td>
-                  <td>₹{expense.amount}</td>
-                  <td>
-                    <button
-                      className="edit-button"
-                      onClick={() => onEdit(expense)}
-                    >
-                      Edit
-                    </button>
+            <div className="expense-tile-middle">
+              <div className="expense-tile-description">
+                {expense.description}
+              </div>
+              <div className="expense-tile-meta">
+                {expense.date} | {expense.category}
+              </div>
+            </div>
 
-                    <button
-                      className="delete-button"
-                      onClick={() => onDelete(expense.id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+            <div className="expense-tile-actions">
+              <button
+                type="button"
+                className="edit-button tile-icon-button"
+                aria-label="Edit"
+                onClick={() => onEdit(expense)}
+              >
+                <EditIcon />
+              </button>
+
+              <button
+                type="button"
+                className="delete-button tile-icon-button"
+                aria-label="Delete"
+                onClick={() => onDelete(expense.id)}
+              >
+                <DeleteIcon />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       {hasMore && (
-        <div className="load-more-wrapper">
-          <button
-            type="button"
-            className="load-more-button"
-            onClick={() => setVisibleCount((prev) => prev + LOAD_MORE_STEP)}
-          >
-            Load More
-          </button>
+        <div ref={sentinelRef} className="lazy-load-sentinel">
+          Loading more…
         </div>
       )}
-    </section>
+    </>
   );
 }
