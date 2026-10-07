@@ -1,5 +1,6 @@
 import type { Expense } from "../types/expense";
 import { exportToCSV } from "../utils/exportUtils";
+import { ExcelIcon } from "./icons";
 
 type ExportButtonsProps = {
   expenses: Expense[];
@@ -13,11 +14,13 @@ export function ExportButtons({ expenses, selectedMonth }: ExportButtonsProps) {
     <div className="export-buttons">
       <button
         type="button"
-        className="export-button"
+        className="export-icon-button"
         disabled={disabled}
+        aria-label="Export CSV"
+        title="Export CSV"
         onClick={() => exportToCSV(expenses, selectedMonth)}
       >
-        Export CSV
+        <ExcelIcon />
       </button>
     </div>
   );

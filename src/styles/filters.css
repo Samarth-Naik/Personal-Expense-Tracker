@@ -19,16 +19,24 @@
 
 .month-filter input[type="month"] {
   flex-shrink: 0;
-  width: 250px;
+  width: 170px;
 }
 
 @media (max-width: 768px) {
   .month-filter {
-    flex-direction: column;
-    align-items: stretch;
+    /* Still a row, not a column — the label wraps to its own line below
+       (via flex-basis: 100%), but the input and the export icon stay on
+       the same row together, icon pushed to the right. */
+    flex-wrap: wrap;
+  }
+
+  .month-filter label {
+    flex-basis: 100%;
   }
 
   .month-filter input[type="month"] {
-    width: 100%;
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
   }
 }

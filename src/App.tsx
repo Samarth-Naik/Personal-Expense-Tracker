@@ -50,7 +50,8 @@ function AppShell() {
     reorderCategories,
   } = useCategories(user);
 
-  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
+  const [dashboardMonth, setDashboardMonth] = useState(getCurrentMonth);
+  const [transactionsMonth, setTransactionsMonth] = useState(getCurrentMonth);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const navigate = useNavigate();
 
@@ -77,10 +78,13 @@ function AppShell() {
     navigate("/");
   };
 
-  const monthlyExpenses = filterByMonth(expenses, selectedMonth);
-  const totalExpenses = getTotal(monthlyExpenses);
-  const categoryTotals = getCategoryTotals(monthlyExpenses);
-  const tableExpenses = sortByLatestUpdated(monthlyExpenses);
+  const dashboardMonthlyExpenses = filterByMonth(expenses, dashboardMonth);
+  const totalExpenses = getTotal(dashboardMonthlyExpenses);
+  const categoryTotals = getCategoryTotals(dashboardMonthlyExpenses);
+
+  const transactionsMonthlyExpenses = filterByMonth(expenses, transactionsMonth);
+  const tableExpenses = sortByLatestUpdated(transactionsMonthlyExpenses);
+
   const latestExpenses = sortByLatestUpdated(expenses);
 
   return (
@@ -126,8 +130,8 @@ function AppShell() {
                   path="/transactions"
                   element={
                     <TransactionsPage
-                      selectedMonth={selectedMonth}
-                      onSelectedMonthChange={setSelectedMonth}
+                      selectedMonth={transactionsMonth}
+                      onSelectedMonthChange={setTransactionsMonth}
                       tableExpenses={tableExpenses}
                       onEditExpense={editFromTransactions}
                       onDeleteExpense={handleDeleteExpense}
@@ -138,10 +142,10 @@ function AppShell() {
                   path="/dashboard"
                   element={
                     <DashboardPage
-                      selectedMonth={selectedMonth}
-                      onSelectedMonthChange={setSelectedMonth}
+                      selectedMonth={dashboardMonth}
+                      onSelectedMonthChange={setDashboardMonth}
                       totalExpenses={totalExpenses}
-                      expenseCount={monthlyExpenses.length}
+                      expenseCount={dashboardMonthlyExpenses.length}
                       categoryTotals={categoryTotals}
                     />
                   }

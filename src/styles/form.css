@@ -28,6 +28,24 @@
   text-align: left;
 }
 
+.form-error {
+  margin: 0;
+
+  color: var(--danger);
+
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.voice-heard {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 13px;
+  font-style: italic;
+}
+
 .form-actions {
   display: flex;
   gap: 10px;
@@ -40,6 +58,41 @@
 
 .cancel-button:hover {
   opacity: 0.9;
+}
+
+.mic-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  flex-shrink: 0;
+
+  background: var(--blue-grey);
+  color: var(--navy);
+}
+
+.mic-button:hover {
+  background: #9eafb9;
+}
+
+.mic-button.is-listening {
+  background: var(--danger);
+  color: white;
+
+  animation: mic-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes mic-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(168, 92, 92, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(168, 92, 92, 0);
+  }
 }
 
 @media (max-width: 768px) {
@@ -74,8 +127,24 @@
   }
 
   .form-row input,
-  .form-row select,
-  .form-row button {
+  .form-row select{
     width: 100%;
+  }
+
+  .form-actions {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-actions button {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-actions .mic-button {
+    width: 44px;
+    flex-shrink: 0;
   }
 }
