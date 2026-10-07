@@ -38,3 +38,12 @@ export function getCurrentMonth() {
   const month = String(now.getMonth() + 1).padStart(2, "0");
   return `${now.getFullYear()}-${month}`;
 }
+
+// Formats a "YYYY-MM-DD" expense date as "1 October", "29 December", etc.
+// Built from local date parts (not `new Date(dateStr)`, which parses as
+// UTC and can shift a day in some timezones) to avoid any off-by-one.
+export function formatExpenseDate(dateStr: string) {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
+}

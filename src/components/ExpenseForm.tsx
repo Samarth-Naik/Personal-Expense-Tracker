@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Expense } from "../types/expense";
 import type { Category } from "../types/category";
 import type { ExpenseInput } from "../hooks/useExpenses";
+import { MicrophoneIcon } from "./icons";
 
 type ExpenseFormProps = {
   editingExpense: Expense | null;
@@ -175,10 +176,6 @@ export function ExpenseForm({
   return (
     <section className="card expense-form">
       <h2>{editingExpense ? "Edit Expense" : "Add Expense"}</h2>
-      <button type="button" onClick={startVoiceRecognition}>
-        {isListening ? "Listening..." : "🎤 Add by Voice"}
-      </button>
-      {voiceText && <p>Heard: {voiceText}</p>}
       <div className="form-row">
         <label>
           Amount
@@ -227,7 +224,8 @@ export function ExpenseForm({
           />
         </label>
 
-        {error && <p>{error}</p>}
+        {error && <p className="form-error">{error}</p>}
+        {voiceText && <p className="voice-heard">Heard: {voiceText}</p>}
 
         <div className="form-actions">
           <button onClick={handleSubmit}>
@@ -243,6 +241,16 @@ export function ExpenseForm({
               Cancel
             </button>
           )}
+
+          <button
+            type="button"
+            className={`mic-button${isListening ? " is-listening" : ""}`}
+            aria-label={isListening ? "Listening…" : "Add by voice"}
+            title={isListening ? "Listening…" : "Add by voice"}
+            onClick={startVoiceRecognition}
+          >
+            <MicrophoneIcon />
+          </button>
         </div>
       </div>
     </section>

@@ -1,29 +1,40 @@
-.export-button {
+.export-buttons {
+  display: flex;
+
+  gap: 10px;
+  flex-shrink: 0;
+
+  /* Pushes this to the right edge of .month-filter, past the label/input,
+     while they stay left-aligned. */
+  margin-left: auto;
+}
+
+.export-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  padding: 0;
+
   background: var(--card);
-  color: var(--navy);
+  color: #1d6f42;
 
   border: 1px solid var(--blue-grey);
 }
 
-.export-button:hover:not(:disabled) {
-   transform: translateY(-1px);
+.export-icon-button:hover:not(:disabled) {
+  background: rgba(29, 111, 66, 0.1);
+
+  transform: translateY(-1px);
 }
 
-.export-button:disabled {
+.export-icon-button:disabled {
   cursor: not-allowed;
 
   opacity: 0.5;
 
   transform: none;
   box-shadow: none;
-}
-
-@media (max-width: 768px) {
-  .export-buttons {
-    flex-direction: column;
-  }
-
-  .export-button {
-    width: 100%;
-  }
 }

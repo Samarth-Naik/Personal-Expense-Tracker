@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Expense } from "../types/expense";
 import { EditIcon, DeleteIcon } from "./icons";
+import { formatExpenseDate } from "../utils/expenseCalculations";
 
 type ExpenseTableProps = {
   expenses: Expense[];
@@ -71,7 +72,7 @@ export function ExpenseTable({
                 {expense.description}
               </div>
               <div className="expense-tile-meta">
-                {expense.date} | {expense.category}
+                {formatExpenseDate(expense.date)} | {expense.category}
               </div>
             </div>
 
