@@ -9,11 +9,98 @@ import {
   query,
   where,
   writeBatch,
+  runTransaction,
+  type QuerySnapshot,
+  type DocumentData,
 } from "firebase/firestore";
 import type { User } from "firebase/auth";
 import { db } from "../firebase";
 import type { Category } from "../types/category";
 import { DEFAULT_CATEGORIES } from "../types/category";
+
+// Atomically seeds the default categories exactly once per user, even if
+// this gets called more than once concurrently (e.g. an effect firing
+// twice). A marker doc at categorySeeds/{uid} is created inside the same
+// Firestore transaction as the seed writes: if two calls race, Firestore
+// detects the conflict on the marker doc and retries the loser, which then
+// sees the marker already exists and does nothing. This is what the old
+// plain "if (snapshot.empty)" check was missing — that check-then-write
+// wasn't atomic, which is what caused duplicate categories to pile up.
+async function seedDefaultCategoriesOnce(user: User) {
+  const markerRef = doc(db, "categorySeeds", user.uid);
+
+  await runTransaction(db, async (transaction) => {
+    const markerSnap = await transaction.get(markerRef);
+    if (markerSnap.exists()) return;
+
+    transaction.set(markerRef, { seededAt: Date.now() });
+
+    DEFAULT_CATEGORIES.forEach((name, index) => {
+      const ref = doc(collection(db, "categories"));
+      transaction.set(ref, { userId: user.uid, name, order: index });
+    });
+  });
+}
+
+// Cleans up any categories that share the same name (case-insensitive) —
+// the legacy symptom of the race above. Keeps the one with the lowest
+// `order` per name, deletes the rest, and re-sequences `order` so there
+// are no gaps left behind. Only ever touches the categories collection —
+// expenses reference a category by its name string, never by id, so this
+// can't orphan or delete any expense.
+async function dedupeCategories(
+  snapshot: QuerySnapshot<DocumentData>,
+): Promise<Category[]> {
+  const all: Category[] = snapshot.docs.map((docSnap) => {
+    const data = docSnap.data();
+    return {
+      id: docSnap.id,
+      userId: data.userId,
+      name: data.name,
+      order: data.order ?? 0,
+    };
+  });
+
+  const byName = new Map<string, Category[]>();
+  all.forEach((category) => {
+    const key = category.name.trim().toLowerCase();
+    byName.set(key, [...(byName.get(key) ?? []), category]);
+  });
+
+  const toDelete: string[] = [];
+  const kept: Category[] = [];
+
+  byName.forEach((group) => {
+    if (group.length === 1) {
+      kept.push(group[0]);
+      return;
+    }
+
+    const sorted = [...group].sort((a, b) =>
+      a.order !== b.order ? a.order - b.order : a.id.localeCompare(b.id),
+    );
+
+    kept.push(sorted[0]);
+    sorted.slice(1).forEach((dup) => toDelete.push(dup.id));
+  });
+
+  if (toDelete.length === 0) {
+    all.sort((a, b) => a.order - b.order);
+    return all;
+  }
+
+  kept.sort((a, b) => a.order - b.order);
+  const reindexed = kept.map((category, index) => ({ ...category, order: index }));
+
+  const batch = writeBatch(db);
+  toDelete.forEach((id) => batch.delete(doc(db, "categories", id)));
+  reindexed.forEach((category) =>
+    batch.update(doc(db, "categories", category.id), { order: category.order }),
+  );
+  await batch.commit();
+
+  return reindexed;
+}
 
 export function useCategories(user: User | null) {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -34,37 +121,15 @@ export function useCategories(user: User | null) {
         where("userId", "==", user.uid),
       );
 
-      const snapshot = await getDocs(categoriesQuery);
+      let snapshot = await getDocs(categoriesQuery);
 
       if (snapshot.empty) {
-        // First time for this user: seed their category list with the
-        // previous hardcoded defaults so nothing changes for existing users.
-        const batch = writeBatch(db);
-        const seeded: Category[] = [];
-
-        DEFAULT_CATEGORIES.forEach((name, index) => {
-          const ref = doc(collection(db, "categories"));
-          batch.set(ref, { userId: user.uid, name, order: index });
-          seeded.push({ id: ref.id, userId: user.uid, name, order: index });
-        });
-
-        await batch.commit();
-        setCategories(seeded);
-      } else {
-        const loaded: Category[] = snapshot.docs.map((docSnap) => ({
-          id: docSnap.id,
-          userId: docSnap.data().userId,
-          name: docSnap.data().name,
-          // Categories created before drag-and-drop ordering existed won't
-          // have this field yet; fall back to 0 so they still sort (stably,
-          // in their existing relative order) rather than break.
-          order: docSnap.data().order ?? 0,
-        }));
-
-        loaded.sort((a, b) => a.order - b.order);
-        setCategories(loaded);
+        await seedDefaultCategoriesOnce(user);
+        snapshot = await getDocs(categoriesQuery);
       }
 
+      const deduped = await dedupeCategories(snapshot);
+      setCategories(deduped);
       setLoading(false);
     };
 
