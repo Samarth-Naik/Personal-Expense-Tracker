@@ -1,5 +1,6 @@
 import { SummaryCards } from "../components/SummaryCards";
 import { CategoryBreakdown } from "../components/CategoryBreakdown";
+import { CategoryPieChart } from "../components/CategoryPieChart";
 
 type DashboardPageProps = {
   selectedMonth: string;
@@ -29,7 +30,7 @@ export function DashboardPage({
       </div>
 
       <SummaryCards total={totalExpenses} count={expenseCount} />
-
+      <CategoryPieChart categoryTotals={categoryTotals} />
       <CategoryBreakdown categoryTotals={categoryTotals} />
     </>
   );
