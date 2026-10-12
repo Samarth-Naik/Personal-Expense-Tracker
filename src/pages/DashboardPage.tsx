@@ -1,6 +1,7 @@
 import { SummaryCards } from "../components/SummaryCards";
 import { CategoryBreakdown } from "../components/CategoryBreakdown";
 import { CategoryPieChart } from "../components/CategoryPieChart";
+import type { Expense } from "../types/expense";
 
 type DashboardPageProps = {
   selectedMonth: string;
@@ -8,6 +9,9 @@ type DashboardPageProps = {
   totalExpenses: number;
   expenseCount: number;
   categoryTotals: Record<string, number>;
+  monthlyExpenses: Expense[];
+  onEditExpense: (expense: Expense) => void;
+  onDeleteExpense: (id: string) => void;
 };
 
 export function DashboardPage({
@@ -16,6 +20,9 @@ export function DashboardPage({
   totalExpenses,
   expenseCount,
   categoryTotals,
+  monthlyExpenses,
+  onEditExpense,
+  onDeleteExpense,
 }: DashboardPageProps) {
   return (
     <>
@@ -31,7 +38,12 @@ export function DashboardPage({
 
       <SummaryCards total={totalExpenses} count={expenseCount} />
       <CategoryPieChart categoryTotals={categoryTotals} />
-      <CategoryBreakdown categoryTotals={categoryTotals} />
+      <CategoryBreakdown
+        categoryTotals={categoryTotals}
+        expenses={monthlyExpenses}
+        onEdit={onEditExpense}
+        onDelete={onDeleteExpense}
+      />
     </>
   );
 }

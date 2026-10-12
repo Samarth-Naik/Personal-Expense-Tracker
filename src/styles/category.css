@@ -1,9 +1,10 @@
+/* =========================
+   CATEGORY BREAKDOWN
+   ========================= */
+
 .category-list {
   display: grid;
-
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
-
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -11,22 +12,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: 12px;
-
   padding: 14px;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(240, 240, 219, 0.65),
-      rgba(172, 186, 196, 0.12)
-    );
-
+  background: linear-gradient(
+    135deg,
+    rgba(240, 240, 219, 0.65),
+    rgba(172, 186, 196, 0.12)
+  );
   border: 1px solid var(--border);
-
   border-radius: 10px;
-
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
@@ -35,24 +29,166 @@
 
 .category-item:hover {
   transform: translateY(-2px);
-
   border-color: var(--blue-grey);
-
-  box-shadow:
-    0 4px 10px rgba(48, 54, 79, 0.07);
+  box-shadow: 0 4px 10px rgba(48, 54, 79, 0.07);
 }
 
 .category-item strong {
   color: var(--navy);
-
   font-weight: 750;
 }
+
 .category-list .empty-state {
   grid-column: 1 / -1;
 }
 
+/* =========================
+   DESKTOP CATEGORY TABS
+   ========================= */
+
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+}
+
+.category-tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(240, 240, 219, 0.55);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: none;
+  transform: none;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.category-tab:hover {
+  background: rgba(172, 186, 196, 0.25);
+  border-color: var(--blue-grey);
+  box-shadow: none;
+  transform: none;
+}
+
+.category-tab.active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
+
+.category-tab strong {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.category-tab.active strong {
+  color: var(--ivory);
+}
+
+/* =========================
+   CATEGORY TRANSACTIONS
+   ========================= */
+
+.category-transactions {
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.category-transactions h3 {
+  margin: 0 0 16px;
+  color: var(--navy);
+  font-size: 17px;
+}
+
+/* =========================
+   MOBILE ACCORDIONS
+   ========================= */
+
+.category-accordions {
+  display: none;
+}
+
+.category-accordion {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background: rgba(240, 240, 219, 0.35);
+}
+
+.category-accordion-trigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+  padding: 15px;
+  background: transparent;
+  color: var(--text);
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+  text-align: left;
+}
+
+.category-accordion-trigger:hover {
+  background: rgba(172, 186, 196, 0.2);
+  box-shadow: none;
+  transform: none;
+}
+
+.category-accordion-trigger.active {
+  background: rgba(172, 186, 196, 0.2);
+}
+
+.category-accordion-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 650;
+}
+
+.category-accordion-trigger strong {
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.category-accordion-chevron {
+  width: 22px;
+  text-align: center;
+  font-size: 20px;
+  color: var(--navy);
+}
+
+.category-accordion-content {
+  padding: 8px 8px 12px;
+  border-top: 1px solid var(--border);
+  min-width: 0;
+}
+
+/* =========================
+   RESPONSIVE LAYOUT
+   ========================= */
+
 @media (max-width: 768px) {
   .category-list {
     grid-template-columns: 1fr;
+  }
+
+  .category-tabs,
+  .desktop-category-panel {
+    display: none;
+  }
+
+  .category-accordions {
+    display: block;
   }
 }
