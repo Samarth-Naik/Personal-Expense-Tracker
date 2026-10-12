@@ -82,7 +82,10 @@ function AppShell() {
   const totalExpenses = getTotal(dashboardMonthlyExpenses);
   const categoryTotals = getCategoryTotals(dashboardMonthlyExpenses);
 
-  const transactionsMonthlyExpenses = filterByMonth(expenses, transactionsMonth);
+  const transactionsMonthlyExpenses = filterByMonth(
+    expenses,
+    transactionsMonth,
+  );
   const tableExpenses = sortByLatestUpdated(transactionsMonthlyExpenses);
 
   const latestExpenses = sortByLatestUpdated(expenses);
@@ -147,6 +150,9 @@ function AppShell() {
                       totalExpenses={totalExpenses}
                       expenseCount={dashboardMonthlyExpenses.length}
                       categoryTotals={categoryTotals}
+                      monthlyExpenses={dashboardMonthlyExpenses}
+                      onEditExpense={editFromTransactions}
+                      onDeleteExpense={handleDeleteExpense}
                     />
                   }
                 />
